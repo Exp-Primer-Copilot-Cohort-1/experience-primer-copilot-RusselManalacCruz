@@ -1,31 +1,37 @@
 // create web server
-// create a new express server
+// create a server
 const express = require('express');
 const app = express();
+// create a port
+const port = 3000;
 
-// create a new comment array
-const comments = [
-  { username: 'alice', comment: 'I love your blog!', createdAt: new Date() },
-  { username: 'bob', comment: 'Good post', createdAt: new Date() },
-];
+// import the comments from comments.js
+const comments = require('./comments');
 
-// add a new comment
-app.post('/comments', (req, res) => {
-  const newComment = {
-    username: req.body.username,
-    comment: req.body.comment,
-    createdAt: new Date()
-  };
-  comments.push(newComment);
-  res.json(newComment);
+// create a route
+app.get('/', (req, res) => {
+    res.send('Hello World!');
 });
 
-// get all comments
+// create a route
 app.get('/comments', (req, res) => {
-  res.json(comments);
+    res.send(comments);
+});
+
+// create a route
+app.get('/comments/:commentId', (req, res) => {
+    const commentId = req.params.commentId;
+    const comment = comments.find(comment => comment.id === commentId);
+    res.send(comment);
 });
 
 // start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
+
+// Path: comments.js
+// create a comments array
+const comments = [
+    {
+        id: '1',
