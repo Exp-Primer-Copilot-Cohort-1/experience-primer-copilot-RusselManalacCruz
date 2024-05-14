@@ -35,3 +35,5 @@ app.listen(port, () => {
 const comments = [
     {
         id: '1',
+    },
+];
