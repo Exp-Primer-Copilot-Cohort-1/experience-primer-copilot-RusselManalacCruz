@@ -37,3 +37,8 @@ app.post('/api/comments', function(req, res) {
         };
     }); // Add this closing curly brace
 });
+
+if (err) {
+    console.error('Error reading COMMENTS_FILE:', err);
+    process.exit(1);
+}
