@@ -1,39 +1,39 @@
 // create web server
-// create a server
-const express = require('express');
-const app = express();
-// create a port
-const port = 3000;
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var path = require('path');
 
-// import the comments from comments.js
-const comments = require('./comments');
+var COMMENTS_FILE = path.join(__dirname, 'comments.json');
 
-// create a route
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.set('port', (process.env.PORT || 3000));
+
+app.use('/', express.static(path.join(__dirname, 'public')));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.get('/api/comments', function(req, res) {
+  fs.readFile(COMMENTS_FILE, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    res.setHeader('Cache-Control', 'no-cache');
+    res.json(JSON.parse(data));
+  });
 });
 
-// create a route
-app.get('/comments', (req, res) => {
-    res.send(comments);
+app.post('/api/comments', function(req, res) {
+    fs.readFile(COMMENTS_FILE, function(err, data) {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        var comments = JSON.parse(data);
+        var newComment = {
+            id: Date.now(),
+        };
+    }); // Add this closing curly brace
 });
-
-// create a route
-app.get('/comments/:commentId', (req, res) => {
-    const commentId = req.params.commentId;
-    const comment = comments.find(comment => comment.id === commentId);
-    res.send(comment);
-});
-
-// start the server
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
-
-// Path: comments.js
-// create a comments array
-const comments = [
-    {
-        id: '1',
-    },
-];
